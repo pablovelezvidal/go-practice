@@ -2,13 +2,34 @@ package main
 
 import (
 	"fmt"
+	"go_routines/data"
 	"math/rand"
 	"sync"
 	"time"
 )
 
 func main() {
-	executeShowGoRoutine()
+	// executeShowGoRoutine()
+	start := time.Now()
+	wg := sync.WaitGroup{}
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go readBook(i, &wg)
+	}
+	wg.Wait()
+	duration := time.Since(start).Milliseconds()
+
+	fmt.Printf("Reading books duration: %d\n", duration)
+
+}
+
+func readBook(id int, wg *sync.WaitGroup) {
+	data.FinishBook(id)
+
+	delay := rand.Intn(800)
+	time.Sleep(time.Millisecond * time.Duration(delay))
+	wg.Done()
 }
 
 func executeShowGoRoutine() {
