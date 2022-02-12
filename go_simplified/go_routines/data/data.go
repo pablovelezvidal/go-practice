@@ -1,6 +1,9 @@
 package data
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type Book struct {
 	Id       int
@@ -21,25 +24,29 @@ var books = []*Book{
 	{10, "El principito", false},
 }
 
-func FindBook(id int) (int, *Book) {
+func FindBook(id int, m *sync.RWMutex) (int, *Book) {
 	index := -1
 	var book *Book
 
+	m.RLock()
 	for i, b := range books {
 		if b.Id == id {
 			index = i
 			book = b
 		}
 	}
+	m.RUnlock()
 	return index, book
 }
 
-func FinishBook(id int) {
-	i, book := FindBook(id)
+func FinishBook(id int, m *sync.RWMutex) {
+	i, book := FindBook(id, m)
 	if i < 0 {
 		return
 	}
+	m.Lock()
 	book.Finished = true
 	books[i] = book
+	m.Unlock()
 	fmt.Printf("Book %s finished \n", book.Name)
 }
