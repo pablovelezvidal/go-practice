@@ -8,12 +8,15 @@ import (
 )
 
 func main() {
+	start := time.Now()
 	wg := &sync.WaitGroup{}
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go showGoRoutine(i, wg)
 	}
 	wg.Wait()
+	duration := time.Since(start).Milliseconds()
+	fmt.Printf("Duration %d", duration)
 }
 
 func showGoRoutine(id int, wg *sync.WaitGroup) {
