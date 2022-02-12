@@ -8,6 +8,10 @@ import (
 )
 
 func main() {
+	executeShowGoRoutine()
+}
+
+func executeShowGoRoutine() {
 	start := time.Now()
 	wg := &sync.WaitGroup{}
 	for i := 0; i < 10; i++ {
